@@ -154,17 +154,25 @@ class DBRepositoryTransaction implements RepositoryTransactionInterface
 
     public function reportMonthly()
     {
-      return  $this->transactionModel->with(['transactionDetail' => function($q){
-      return  $q->select('paied_on',DB::raw('MONTH(paied_on) as month, YEAR(paied_on), SUM(amount_paied) as Paied'))
-         ->groupBy(DB::raw('MONTH(paied_on), YEAR(paied_on)'));
-    //   ->orderBy(DB::raw('YEAR(paied_on)'), 'asc')
-    //   ->orderBy(DB::raw('MONTH(paied_on)'), 'asc');
-      }])
-    //   ->select(DB::raw('MONTH(created_at) as month, YEAR(created_at) as year, SUM(transaction_details.amount_paied) as paid, SUM(outstanding) as outstanding, SUM(overdue) as overdue'))
-    //   ->groupBy(DB::raw('MONTH(created_at), YEAR(created_at)'))
-    //   ->orderBy(DB::raw('YEAR(created_at)'), 'asc')
-    //   ->orderBy(DB::raw('MONTH(created_at)'), 'asc')
+    //   return  $this->transactionModel->with(['transactionDetail' => function($q){
+    //   return  $q->select('paied_on',DB::raw('MONTH(paied_on) as month, YEAR(paied_on), SUM(amount_paied) as Paied'))
+    //      ->groupBy(DB::raw('MONTH(paied_on), YEAR(paied_on)'));
+    // //   ->orderBy(DB::raw('YEAR(paied_on)'), 'asc')
+    // //   ->orderBy(DB::raw('MONTH(paied_on)'), 'asc');
+    //   }])
+    // //   ->select(DB::raw('MONTH(created_at) as month, YEAR(created_at) as year, SUM(transaction_details.amount_paied) as paid, SUM(outstanding) as outstanding, SUM(overdue) as overdue'))
+    // //   ->groupBy(DB::raw('MONTH(created_at), YEAR(created_at)'))
+    // //   ->orderBy(DB::raw('YEAR(created_at)'), 'asc')
+    // //   ->orderBy(DB::raw('MONTH(created_at)'), 'asc')
+    //   ->get();
+      $dd =$this->transactioDetailModel->join('transactions','transactions.id','=','transaction_details.transaction_id')->select(DB::raw('MONTH(paied_on) as moth
+      ,Year(paied_on) as year
+      , SUM(amount_paied) as paied
+        '))
+      ->groupBy(DB::raw('MONTH(paied_on),Year(paied_on)'))
       ->get();
+      return $dd;
+
     }
 
 }
