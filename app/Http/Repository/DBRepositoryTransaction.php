@@ -155,9 +155,12 @@ class DBRepositoryTransaction implements RepositoryTransactionInterface
     public function reportMonthly()
     {
 
-      $report =$this->transactioDetailModel->join('transactions','transactions.id','=','transaction_details.transaction_id')->select(DB::raw('MONTH(paied_on) as moth
+      $report =$this->transactioDetailModel->join('transactions','transactions.id','=','transaction_details.transaction_id')
+      ->select(DB::raw('MONTH(paied_on) as moth
       ,Year(paied_on) as year
       , SUM(amount_paied) as paied
+      ,SUM(CASE WHEN status = "outstanding" THEN amount_paied ELSE 0 END ) as outstanding
+      ,SUM(CASE WHEN status = "overdue" THEN amount_paied ELSE 0 END ) as overdue
         '))
       ->groupBy(DB::raw('MONTH(paied_on),Year(paied_on)'))
       ->get();
